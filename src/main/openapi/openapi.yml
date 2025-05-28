@@ -1,0 +1,116 @@
+openapi: 3.0.3
+info:
+  title: @project.description@
+  version: @project.version@
+tags:
+  - name: Payments
+paths:
+  /payments:
+    post:
+      tags:
+        - Payments
+      operationId: create-one-payment
+      summary: Create one payment.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                a1:
+                  type: string
+                  required: true
+                  description: Payment's subject.
+                a2:
+                  type: integer
+                  required: true
+                  description: Quantity of products.
+                a3:
+                  type: string
+                  required: true
+                  description: Payment from person.
+                a4:
+                  type: string
+                  required: true
+                  description: Payment to person.
+                a5:
+                  type: number
+                  required: true
+                  description: Payment's amount.
+      responses:
+        '201':
+          description: Payment created.
+          headers:
+            a0:
+              description: Payment's unique identifier.
+              schema:
+                type: string
+  /payments/{paymentId}:
+    get:
+      tags:
+        - Payments
+      operationId: retrieve-one-payment
+      summary: Retrieve one payment.
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Payment found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a1:
+                    type: string
+                    description: Payment's subject.
+                  a2:
+                    type: integer
+                    description: Quantity of products.
+                  a3:
+                    type: string
+                    description: Payment from person.
+                  a4:
+                    type: string
+                    description: Payment to person.
+                  a5:
+                    type: number
+                    description: Payment's amount.
+                  a6:
+                    type: string
+                    enum:
+                      - PENDING
+                      - PAID
+                      - CANCELLED
+                    description: Payment's status.
+    patch:
+      tags:
+        - Payments
+      operationId: partial-update-one-payment
+      summary: Partial update one payment.
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                a6:
+                  type: string
+                  enum:
+                    - PENDING
+                    - PAID
+                    - CANCELLED
+                  description: Payment's status.
+      responses:
+        '204':
+          description: Payment updated.

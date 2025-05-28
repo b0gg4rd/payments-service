@@ -1,0 +1,12 @@
+{
+  "bsonType": "object",
+  "required": ["subject", "quantity", "from", "to", "amount", "status"],
+  "properties": {
+    "subject": { "bsonType": "string" },
+    "quantity": { "bsonType": "int" },
+    "from": { "bsonType": "string" },
+    "to": { "bsonType": "string" },
+    "amount": { "bsonType": "double" },
+    "status": { "bsonType": "string" }
+  }
+}

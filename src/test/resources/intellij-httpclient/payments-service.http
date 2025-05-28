@@ -1,0 +1,57 @@
+# payments-service
+
+###
+# @name health
+GET {{server}}/actuator/health
+
+###
+# @name create-one-payment
+POST {{server}}/payments
+Content-Type: application/json
+
+{
+  "a1": "viaje",
+  "a2": 1,
+  "a3": "Ameyali Bárcenas",
+  "a4": "Grace Hopper",
+  "a5": 80.81
+}
+
+> {%
+  client.test("given_correct_body_when_execute_then_status_201", function() {
+    client.assert(response.status === 201, "Response status is not 201");
+  });
+
+  client.test("given_correct_body_when_execute_then_response_has_a0_header", function() {
+    client.assert(response.headers.valueOf("a0"), "Response does not have a0 header");
+  });
+
+  client.global.set("paymentId", response.headers.valueOf("a0"), "Set a0 as paymentId");
+%}
+
+###
+# @name retrieve-one-payment
+GET {{server}}/payments/{{paymentId}}
+Accept: application/json
+
+> {%
+  client.test("given_existing_payment_id_when_execute_then_receive_status_200", function() {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+###
+# @name update-status
+PATCH {{server}}/payments/{{paymentId}}
+Content-Type: application/json
+
+{
+  "a6": "CANCELLED"
+}
+
+> {%
+ client.test("given_existing_payment_when_execute_then_receive_status_204", function() {
+   client.assert(response.status === 204, "Response status is not 204");
+
+ });
+%}
