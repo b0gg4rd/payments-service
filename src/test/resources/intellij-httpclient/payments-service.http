@@ -5,7 +5,7 @@
 GET {{server}}/actuator/health
 
 ###
-# @name create-one-payment
+# @name given_correct_request_when_create_one_payment_then_status_201
 POST {{server}}/payments
 Content-Type: application/json
 
@@ -18,11 +18,11 @@ Content-Type: application/json
 }
 
 > {%
-  client.test("given_correct_body_when_execute_then_status_201", function() {
+  client.test("given_correct_request_when_create_one_payment_then_status_201", function() {
     client.assert(response.status === 201, "Response status is not 201");
   });
 
-  client.test("given_correct_body_when_execute_then_response_has_a0_header", function() {
+  client.test("given_correct_request_when_create_one_payment_then_a0_header", function() {
     client.assert(response.headers.valueOf("a0"), "Response does not have a0 header");
   });
 
@@ -30,18 +30,29 @@ Content-Type: application/json
 %}
 
 ###
-# @name retrieve-one-payment
+# @name given_existing_payment_id_when_retrieve_one_payment_then_status_200
 GET {{server}}/payments/{{paymentId}}
 Accept: application/json
 
 > {%
-  client.test("given_existing_payment_id_when_execute_then_receive_status_200", function() {
+  client.test("given_existing_payment_id_when_retrieve_one_payment_then_status_200", function() {
     client.assert(response.status === 200, "Response status is not 200");
   });
 %}
 
 ###
-# @name update-status
+# @name given_not_existing_payment_id_when_retrieve_one_payment_then_status_404
+GET {{server}}/payments/666
+Accept: application/json
+
+> {%
+  client.test("given_not_existing_payment_id_when_execute_then_receive_status_404", function() {
+    client.assert(response.status === 404, "Response status is not 404");
+  });
+%}
+
+###
+# @name given_existing_payment_when_partial_update_one_payment_then_status_204
 PATCH {{server}}/payments/{{paymentId}}
 Content-Type: application/json
 
@@ -50,8 +61,24 @@ Content-Type: application/json
 }
 
 > {%
- client.test("given_existing_payment_when_execute_then_receive_status_204", function() {
+ client.test("given_existing_payment_when_partial_update_one_payment_then_status_204", function() {
    client.assert(response.status === 204, "Response status is not 204");
 
  });
+%}
+
+###
+# @name given_not_existing_payment_when_partial_update_one_payment_then_status_404
+PATCH {{server}}/payments/999
+Content-Type: application/json
+
+{
+  "a6": "CANCELLED"
+}
+
+> {%
+  client.test("given_not_existing_payment_when_partial_update_one_payment_then_status_204", function() {
+    client.assert(response.status === 404, "Response status is not 404");
+
+  });
 %}

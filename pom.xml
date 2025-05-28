@@ -280,6 +280,9 @@
                           <log>.*Started PaymentsServiceApplication</log>
                           <time>30000</time>
                         </wait>
+                        <log>
+                          <enabled>true</enabled>
+                        </log>
                       </run>
                     </image>
                   </images>
