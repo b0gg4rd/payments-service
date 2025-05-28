@@ -30,4 +30,6 @@ public interface StringLiterals {
 
   String PAYMENTS_COLLECTION_NAME = "payments";
 
+  String STATUS_UPDATED_SENT = "Payment status updated message sent: '{}'";
+
 }

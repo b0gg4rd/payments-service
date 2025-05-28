@@ -76,6 +76,10 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-amqp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
@@ -249,6 +253,35 @@
                             <volume>/tmp/mongodb:/data/db</volume>
                           </bind>
                         </volumes>
+                      </run>
+                    </image>
+                  </images>
+                </configuration>
+              </execution>
+              <execution>
+                <id>rabbitmq</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <configuration>
+                  <verbose>true</verbose>
+                  <images>
+                    <image>
+                      <alias>rabbitmq</alias>
+                      <name>rabbitmq:3.12-management</name>
+                      <run>
+                        <net>host</net>
+                        <containerNamePattern>%a</containerNamePattern>
+                        <volumes>
+                          <bind>
+                            <volume>/tmp/rabbitmq:/var/lib/rabbitmq</volume>
+                          </bind>
+                        </volumes>
+                        <wait>
+                          <log>.*Server startup complete</log>
+                          <time>15000</time>
+                        </wait>
                       </run>
                     </image>
                   </images>

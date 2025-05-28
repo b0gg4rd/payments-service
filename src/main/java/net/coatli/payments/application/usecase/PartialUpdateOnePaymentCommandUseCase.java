@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coatli.payments.StringLiterals;
 import net.coatli.payments.adapter.secondary.database.PaymentsDatabaseSecondaryAdapter;
-import net.coatli.payments.application.model.*;
+import net.coatli.payments.adapter.secondary.messaging.PaymentsMessagingSecondaryAdapter;
+import net.coatli.payments.application.model.PartialUpdateOnePaymentCommandInput;
+import net.coatli.payments.application.model.PartialUpdateOnePaymentCommandOutput;
 import net.coatli.payments.application.model.mapper.PartialUpdateOnePaymentCommandUseCaseMapper;
 import net.coatli.payments.application.port.PartialUpdateOnePaymentCommand;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class PartialUpdateOnePaymentCommandUseCase implements PartialUpdateOnePaymentCommand {
 
   private final PaymentsDatabaseSecondaryAdapter paymentsDatabaseSecondaryAdapter;
+
+  private final PaymentsMessagingSecondaryAdapter paymentsMessagingSecondaryAdapter;
 
   private final PartialUpdateOnePaymentCommandUseCaseMapper partialUpdateOnePaymentCommandUseCaseMapper;
 
@@ -28,7 +32,11 @@ public class PartialUpdateOnePaymentCommandUseCase implements PartialUpdateOnePa
     return
       paymentsDatabaseSecondaryAdapter
         .updateOne(partialUpdateOnePaymentCommandUseCaseMapper.partialUpdateOnePaymentCommandInput2Payment(partialUpdateOnePaymentCommandInput))
-        .map(payment -> new PartialUpdateOnePaymentCommandOutput().setPayment(payment))
+        .map(
+          payment -> {
+            paymentsMessagingSecondaryAdapter.sendStatusUpdated(payment);
+            return new PartialUpdateOnePaymentCommandOutput().setPayment(payment);
+        })
         .orElse(new PartialUpdateOnePaymentCommandOutput());
 
 
